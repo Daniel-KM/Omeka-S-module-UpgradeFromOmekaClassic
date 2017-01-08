@@ -2,10 +2,15 @@ Upgrade from Omeka Classic
 ==========================
 
 [Upgrade from Omeka Classic] is a module for [Omeka Semantic] that allows to
-uses a theme built for [Omeka 2] and upgraded via the plugin [Upgrade to Omeka Semantic].
+reuse a theme built for [Omeka 2] and upgraded via the plugin [Upgrade to Omeka Semantic].
 
 As a compatibility layer, some visual glitches and bugs may subsist, in
 particular when the theme is heavily customized.
+
+You may check the themes and change the main layout and each view in order to
+replace old Omeka Classic functions by Omeka S ones. See the [official themes]
+to discover the new methods, or check the integrated views in `application/view-admin`
+and `application/view-shared`.
 
 For more information about the upgrade, see [Upgrade to Omeka Semantic].
 
@@ -79,6 +84,7 @@ Copyright
 [Omeka Semantic]: https://omeka.org/s
 [Omeka 2]: https://omeka.org
 [Omeka S]: https://omeka.org/s
+[official themes]: https://github.com/omeka-s-themes
 [module issues]: https://github.com/Daniel-KM/UpgradeToOmekaS/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
