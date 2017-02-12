@@ -1,11 +1,11 @@
 <?php
 namespace UpgradeFromOmekaClassic\View\Helper;
 
-use Zend\View\Helper\AbstractHelper;
-use Zend\View\Exception\InvalidArgumentException;
 use Omeka\Api\Representation\AbstractResourceRepresentation;
 use Omeka\Api\Representation\ItemRepresentation;
 use Omeka\Api\Representation\MediaRepresentation;
+use Zend\View\Exception\InvalidArgumentException;
+use Zend\View\Helper\AbstractHelper;
 
 /**
  * Return all functions converted from Omeka Classic to Omeka Semantic.
@@ -19,6 +19,53 @@ use Omeka\Api\Representation\MediaRepresentation;
  */
 class Upgrade extends AbstractHelper
 {
+
+    /**
+     * Mapping of plugins between Omeka C and Omeka S
+     *
+     * @internal Only names that changed are required. "true" means integrated.
+     *
+     * @var array
+     */
+    public $mapping_plugins = [
+        // Integrated plugins.
+        'DublinCoreExtended' => true,
+        'ExhibitBuilder' => true,
+        'ItemRelations' => true,
+        'MoreUserRoles' => true,
+        'SimplePages' => true,
+
+        'ArchiveFolder' => false,
+        'Ark' => false,
+        'BeamMeUpToInternetArchive' => false,
+        'BeamMeUpToSoundcloud' => false,
+        'CleanUrl' => false,
+        'Coins' => false,
+        'CollectionTree' => false,
+        'Commenting' => false,
+        'Contribution' => 'Collecting',
+        'CsvImport' => 'CSVImport',
+        'CsvImportPlus' => false,
+        'Dropbox' => false,
+        'EmbedCodes' => 'Sharing',
+        'Geolocation' => 'Mapping',
+        'GuestUser' => false,
+        'HistoryLog' => false,
+        'MultiCollections' => false,
+        'NeatlineTime' => false,
+        'OpenlayersZoom' => false,
+        'Rating' => false,
+        'Scripto' => false,
+        'SimpleContact' => false,
+        'SimpleVocab' => 'CustomVocab',
+        'SimpleVocabPlus' => false,
+        'SocialBookmarking' => 'Sharing',
+        'Stats' => false,
+        'Tagging' => false,
+        'Taxonomy' => false,
+        'UniversalViewer' => false,
+        'ZoteroImport' => 'ZoteroImport',
+    ];
 
     /**
      * Mapping of models between Omeka C and Omeka S.
@@ -78,7 +125,7 @@ class Upgrade extends AbstractHelper
     ];
 
     /**
-     * Mapping between Omeka C derivatives and Omeka S derivatives.
+     * Mapping of urls between Omeka C and Omeka S .
      *
      * @var array
      */
@@ -94,7 +141,7 @@ class Upgrade extends AbstractHelper
     ];
 
     /**
-     * Mapping between Omeka C derivatives and Omeka S derivatives.
+     * Mapping of derivatives between Omeka C and Omeka S.
      *
      * @var array
      */
@@ -176,6 +223,20 @@ class Upgrade extends AbstractHelper
      */
     public function fallback(...$params)
     {
+    }
+
+    /**
+     * Map the name of a plugin to the name of a module.
+     *
+     * @param string $pluginName
+     * @return boolean|string True if plugin is integrated, false if not
+     * upgraded, else the matching module name, else the plugin name.
+     */
+    public function mapPluginToModule($pluginName)
+    {
+        return isset($this->mapping_plugins[$pluginName])
+            ? $this->mapping_plugins[$pluginName]
+            : $pluginName;
     }
 
     /**
@@ -1549,13 +1610,25 @@ class Upgrade extends AbstractHelper
     //     }
         static $versionsOfactiveModules;
 
+        $name = $this->mapPluginToModule($name);
+        if (is_bool($name)) {
+            return $name;
+        }
+
         if (is_null($versionsOfactiveModules)) {
             $versionsOfactiveModules = [];
-            $modules = $this->getView()->api()->search('modules')->getContent();
-            foreach ($modules as $module) {
-                $jsonLd = $module->getJsonLd();
-                if ($jsonLd['o:state'] == 'active') {
-                    $versionsOfactiveModules[$module->id()] = $jsonLd['o:ini']['version'];
+            // Only identified users can search modules, so use a direct query.
+            $sql = "SELECT * FROM module ORDER BY id;";
+            $conn = $this->get_db();
+            $stmt = $conn->query($sql);
+            $result = $stmt->fetchAll();
+            if (!$result) {
+                return false;
+            }
+
+            foreach ($result as $row) {
+                if ($row['is_active']) {
+                    $versionsOfactiveModules[$row['id']] = $row['version'];
                 }
             }
         }
@@ -1567,6 +1640,7 @@ class Upgrade extends AbstractHelper
         if ($version) {
             return version_compare($versionsOfactiveModules[$name], $version, $compOperator);
         }
+
         return true;
     }
 
