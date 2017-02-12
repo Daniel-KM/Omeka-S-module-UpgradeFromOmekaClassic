@@ -358,14 +358,7 @@ class Upgrade extends AbstractHelper
                 $key = $this->mapping_query_keys[$key];
             }
 
-            $mapColumn = $this->mapColumn($value);
-            if ($mapColumn) {
-                $value = $this->mapColumn($value);
-            } elseif (is_object($value)) {
-                $value = $value->id();
-            }
-
-            $result[$key] = $value;
+            $result[$key] = $this->mapColumn($value);
         }
 
         return $result;
@@ -379,8 +372,27 @@ class Upgrade extends AbstractHelper
      */
     public function mapColumn($column)
     {
+        if (is_array($column)) {
+            $result = [];
+            foreach ($column as $key => $col) {
+                $result[$key] = $this->mapColumn($col);
+            }
+            return $result;
+        }
+
         if (is_object($column)) {
             $column = $column->id();
+        }
+
+        if (is_null($column) || $column === '') {
+            return '';
+        }
+
+        if ($column === false) {
+            return '0';
+        }
+        if ($column === true) {
+            return '1';
         }
 
         if (isset($this->mapping_query_values[$column])) {
@@ -395,6 +407,8 @@ class Upgrade extends AbstractHelper
                 return $property;
             }
         }
+
+        return (string) $column;
     }
 
     /**
@@ -3079,7 +3093,7 @@ class Upgrade extends AbstractHelper
             if($column) {
                 // Upgrade columns.
                 $column = $this->mapColumn($column);
-                if (empty($column)) {
+                if ($column === '') {
                     continue;
                 }
                 $urlParams = $params;
