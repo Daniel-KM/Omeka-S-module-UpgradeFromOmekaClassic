@@ -473,6 +473,27 @@ class Upgrade extends AbstractHelper
     }
 
     /**
+     * Check the config to use internal assets or not, in order to respect privacy.
+     *
+     * Default is true.
+     *
+     * @return boolean
+     */
+    function useInternalAssets()
+    {
+        //     $config = Zend_Registry::get('bootstrap')->getResource('Config');
+        //     $useInternalAssets = isset($config->theme->useInternalAssets)
+        //         ? (bool) $config->theme->useInternalAssets
+        //         : true;
+        //     return $useInternalAssets;
+        $config = $this->getServices()->get('Config');
+        $useInternalAssets = isset($config['assets']['use_externals'])
+            ? !$config['assets']['use_externals']
+            : true;
+        return $useInternalAssets;
+    }
+
+    /**
      * Check if a template exists in the current theme.
      *
      * @internal This may be useful to use these functions with standard themes.
