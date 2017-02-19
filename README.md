@@ -4,13 +4,8 @@ Upgrade from Omeka Classic
 [Upgrade from Omeka Classic] is a module for [Omeka Semantic] that allows to
 reuse a theme built for [Omeka 2] and upgraded via the plugin [Upgrade to Omeka Semantic].
 
-As a compatibility layer, some visual glitches and bugs may subsist, in
-particular when the theme is heavily customized.
-
-You may check the themes and change the main layout and each view in order to
-replace old Omeka Classic functions by Omeka S ones. See the [official themes]
-to discover the new methods, or check the integrated views in `application/view-admin`
-and `application/view-shared`.
+Furthermore, it adds a route for old urls `items/show/#id` to the new format
+`item/#id` and redirects them to the items of the specified site of Omeka S.
 
 For more information about the upgrade, see [Upgrade to Omeka Semantic].
 
@@ -23,6 +18,26 @@ Installation
 Uncompress files and rename module folder `UpgradeFromOmekaClassic`.
 
 Then install it like any other Omeka module and follow the config instructions.
+
+*IMPORTANT*
+
+If you change the slug of the main site, don't forget to set it in the config
+file `config/module.config.php`.
+
+
+Usage
+-----
+
+As a compatibility layer, some visual glitches and bugs may subsist, in
+particular when the theme is heavily customized.
+You may check the themes and change the main layout and each view in order to
+replace old Omeka Classic functions by Omeka S ones. See the [official themes]
+to discover the new  methods, or check the integrated views in `application/view-admin`
+and `application/view-shared`.
+
+If you use a new theme, you don't need this plugin. If you just want to keep
+routes, simply copy the config of the routes from the file `config/module.config.php`
+to the main config of the site `config/local.config.php`.
 
 
 Warning
