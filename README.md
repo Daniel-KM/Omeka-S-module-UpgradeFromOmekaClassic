@@ -92,7 +92,7 @@ Copyright
 * Copyright Daniel Berthereau, 2017
 
 
-[Upgrade from Omeka Classic]: https://github.com/Daniel-KM/UpgradeFromOmekaClassic
+[Upgrade from Omeka Classic]: https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic
 [Upgrade to Omeka Semantic]: https://github.com/Daniel-KM/UpgradeToOmekaS
 [Omeka]: https://www.omeka.org
 [Omeka Classic]: https://omeka.org
@@ -100,7 +100,7 @@ Copyright
 [Omeka 2]: https://omeka.org
 [Omeka S]: https://omeka.org/s
 [official themes]: https://github.com/omeka-s-themes
-[module issues]: https://github.com/Daniel-KM/UpgradeToOmekaS/issues
+[module issues]: https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [FSF]: https://www.fsf.org
