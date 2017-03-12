@@ -1,0 +1,19 @@
+{
+  "name": "upgradefromomekaclassic",
+  "version": "3.0.2",
+  "description": "Compatibility layer to use Omeka Classic themes in Omeka Semantic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic"
+  },
+  "author": "Daniel Berthereau",
+  "license": "CeCILL v2.1",
+  "bugs": {
+    "url": "https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic/issues"
+  },
+  "homepage": "https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic#readme"
+}
