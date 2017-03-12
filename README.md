@@ -1,6 +1,8 @@
 Upgrade from Omeka Classic
 ==========================
 
+[![Build Status](https://travis-ci.org/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic.svg?branch=master)](https://travis-ci.org/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic)
+
 [Upgrade from Omeka Classic] is a module for [Omeka Semantic] that allows to
 reuse a theme built for [Omeka 2] and upgraded via the plugin [Upgrade to Omeka Semantic].
 
