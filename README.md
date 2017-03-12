@@ -7,7 +7,10 @@ reuse a theme built for [Omeka 2] and upgraded via the plugin [Upgrade to Omeka 
 Furthermore, it adds a route for old urls `items/show/#id` to the new format
 `item/#id` and redirects them to the items of the specified site of Omeka S.
 
-For more information about the upgrade, see [Upgrade to Omeka Semantic].
+If the theme was not upgraded, this module is useless.
+
+For more information about the upgrade, see [Upgrade to Omeka Semantic]. See a
+full list of [modules] and [themes] for Omeka S.
 
 Omeka S is still in a beta phase, but it can be already used for common sites.
 
@@ -99,6 +102,8 @@ Copyright
 [Omeka Semantic]: https://omeka.org/s
 [Omeka 2]: https://omeka.org
 [Omeka S]: https://omeka.org/s
+[modules]: https://daniel-km.github.io/UpgradeToOmekaS/omeka_s_modules.html
+[themes]: https://daniel-km.github.io/UpgradeToOmekaS/omeka_s_themes.html
 [official themes]: https://github.com/omeka-s-themes
 [module issues]: https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
