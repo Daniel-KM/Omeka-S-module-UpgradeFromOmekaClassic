@@ -6,6 +6,7 @@ use Omeka\Api\Representation\ItemRepresentation;
 use Omeka\Api\Representation\MediaRepresentation;
 use Zend\View\Exception\InvalidArgumentException;
 use Zend\View\Helper\AbstractHelper;
+use Omeka\Api\Exception\NotFoundException;
 
 /**
  * Return all functions converted from Omeka Classic to Omeka Semantic.
@@ -277,7 +278,7 @@ class Upgrade extends AbstractHelper
         // Manage plural/singular, with an exception.
         // Manage an exception.
         if ($var == 'media' || $var == 'medium') {
-            $var =  $plural ? 'medias' : 'media';
+            $var =  $plural ? 'media' : 'media';
         } elseif ($plural) {
             $var = \Doctrine\Common\Inflector\Inflector::pluralize($var);
         }
@@ -527,6 +528,22 @@ class Upgrade extends AbstractHelper
      */
     public function currentSite()
     {
+        $view = $this->getView();
+        $slug = $view
+            ->params()
+            ->fromRoute('site-slug');
+        if ($slug) {
+            try {
+                $site = $view
+                    ->api()
+                    ->read('sites', ['slug' => $slug]);
+                return $site->getContent();
+            } catch (NotFoundException $e) {
+                return;
+            }
+        }
+
+        // A second way to find the site via the route and the database.
         $site = $this->getView()
             ->getHelperPluginManager()
             ->get('Zend\View\Helper\ViewModel')
@@ -535,20 +552,6 @@ class Upgrade extends AbstractHelper
         if (!empty($site)) {
             return $site;
         }
-
-        // A second way to find the site via the route and the database.
-        $view = $this->getView();
-        $slug = $view
-            ->params()
-            ->fromRoute('site-slug');
-        if (empty($slug)) {
-            return;
-        }
-        $site = $view
-            ->api()
-            ->read('sites', ['slug' => $slug])
-            ->getContent();
-        return $site;
     }
 
     /**
@@ -1192,9 +1195,9 @@ class Upgrade extends AbstractHelper
         }
 
         $searchQueryTypes = array(
-            'keyword'     => __('Keyword'),
-            'boolean'     => __('Boolean'),
-            'exact_match' => __('Exact match'),
+            'keyword'     => $this->stranslate('Keyword'),
+            'boolean'     => $this->stranslate('Boolean'),
+            'exact_match' => $this->stranslate('Exact match'),
         );
         $searchQueryTypes = $this->apply_filters('search_query_types', $searchQueryTypes);
         return $searchQueryTypes;
@@ -2696,7 +2699,8 @@ class Upgrade extends AbstractHelper
     public function label_table_options($options, $labelOption = null)
     {
         if ($labelOption === null) {
-            $labelOption = __('Select Below ');
+    //         $labelOption = __('Select Below ');
+            $labelOption = $this->stranslate('Select Below ');
         }
         return array('' => $labelOption) + $options;
     }
@@ -4701,7 +4705,8 @@ class Upgrade extends AbstractHelper
     {
         // NOTE Useless: Tags are currently not managed by Omeka S.
         if (!$recordOrTags) {
-            $tags = array();
+    //         $tags = array();
+            $tags = [];
         } else if (is_string($recordOrTags)) {
     //         $tags = get_current_record($recordOrTags)->Tags;
             // $tags = $this->get_current_record($recordOrTags)->tags();
@@ -4716,7 +4721,7 @@ class Upgrade extends AbstractHelper
         }
 
         if (empty($tags)) {
-            return '<p>' . __('No tags are available.') . '</p>';
+            return '<p>' . $this->stranslate('No tags are available.') . '</p>';
         }
 
         //Get the largest value in the tags array
