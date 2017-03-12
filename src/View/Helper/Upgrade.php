@@ -48,6 +48,7 @@ class Upgrade extends AbstractHelper
         'CsvImportPlus' => false,
         'Dropbox' => false,
         'EmbedCodes' => 'Sharing',
+        'Escher' => 'EasyInstall',
         'Geolocation' => 'Mapping',
         'GuestUser' => false,
         'HistoryLog' => false,
@@ -63,7 +64,7 @@ class Upgrade extends AbstractHelper
         'Stats' => false,
         'Tagging' => false,
         'Taxonomy' => false,
-        'UniversalViewer' => false,
+        'UniversalViewer' => 'UniversalViewer',
         'ZoteroImport' => 'ZoteroImport',
     ];
 
@@ -1638,7 +1639,6 @@ class Upgrade extends AbstractHelper
 
         if (is_null($versionsOfactiveModules)) {
             $versionsOfactiveModules = [];
-            // Only identified users can search modules, so use a direct query.
             $sql = "SELECT * FROM module ORDER BY id;";
             $conn = $this->get_db();
             $stmt = $conn->query($sql);
@@ -1668,7 +1668,7 @@ class Upgrade extends AbstractHelper
     /**
      * Translate a string.
      *
-     * @deprecated Use {@link stranslate} instead or the directive "`// @translate`".
+     * @deprecated Use "$this->translate(new Message())" or the directive "`// @translate`" instead.
      * @package Omeka\Function\Locale
      * @uses Zend_Translate::translate()
      * @param string|array $msgid The string to be translated, or Array for plural
@@ -1726,9 +1726,9 @@ class Upgrade extends AbstractHelper
      *
      * If there are multiple plural, translate them separately.
      *
+     * @internal Use "$this->translate(new Omeka\Stdlib\Message())" or the directive "`// @translate`" instead.
      * @internal Use preferably named placehoders (%2$s, %1$d...).
      *
-     * @internal May use "`@translate`" as comment at the end of a line.
      * @param string|array $msgid The string to be translated, or Array for plural
      *  translations.
      * @return string The translated string.
@@ -3072,7 +3072,7 @@ class Upgrade extends AbstractHelper
         } catch (\Omeka\Api\Exception\NotFoundException $e) {
             return;
         }
-        return $record->getContent();
+        return empty($record) ? null : $record->getContent();
     }
 
     /**
@@ -5380,7 +5380,7 @@ class Upgrade extends AbstractHelper
      * @param I
      * @return string
      */
-    function getCitation(ItemRepresentation $item)
+    public function getCitation(ItemRepresentation $item)
     {
         $citation = '';
 
