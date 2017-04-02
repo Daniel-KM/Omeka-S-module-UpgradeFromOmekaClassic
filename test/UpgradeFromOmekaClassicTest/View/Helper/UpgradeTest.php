@@ -1,18 +1,20 @@
 <?php
 namespace UpgradeFromOmekaClassicTest\View\Helper;
 
+use Omeka\Api\Exception\BadRequestException;
+use Omeka\Entity\Site;
 use Omeka\Test\TestCase;
 use OmekaTestHelper\Bootstrap;
 use UpgradeFromOmekaClassic\View\Helper\Upgrade;
 use Zend\View\Exception\InvalidArgumentException;
-use Omeka\Entity\Site;
-use Omeka\Api\Exception\BadRequestException;
+use Zend\Mvc\Controller\Plugin\Params;
 
 class UpgradeTest extends TestCase
 {
 
     protected $upgrade;
 
+    protected $application;
     protected $services;
     protected $api;
     protected $view;
@@ -24,10 +26,16 @@ class UpgradeTest extends TestCase
 
     public function setUp()
     {
-        $services = Bootstrap::getApplication()->getServiceManager();
+        parent::setup();
 
+        $application = Bootstrap::getApplication();
+        $services = $application->getServiceManager();
+
+        $this->application = $application;
         $this->services = $services;
         $this->api = $services->get('Omeka\ApiManager');
+
+        $this->loginAsAdmin();
 
         // Create two items and an item set.
         $response = $this->api->create('items');
@@ -37,6 +45,9 @@ class UpgradeTest extends TestCase
         $response = $this->api->create('item_sets');
         $this->itemSet = $response->getContent();
 
+        // Process tests as a anonymous user.
+        $this->logout();
+
         $paramsRoute = [
             'site-slug' => 'current-site',
         ];
@@ -44,7 +55,7 @@ class UpgradeTest extends TestCase
             'sort_by' => 'id',
             'sort_order' => 'asc',
         ];
-        $params = new \Zend\Mvc\Controller\Plugin\Params($paramsRoute);
+        $params = new Params($paramsRoute);
         $params = $this->getMock(
             'Omeka\View\Helper\Params',
             ['fromRoute', 'fromQuery'],
@@ -137,15 +148,44 @@ class UpgradeTest extends TestCase
 
         $this->view = $view;
 
-        $this->upgrade = new Upgrade();
+        $this->upgrade = new Upgrade($this->services);
         $this->upgrade->setView($view);
     }
 
     public function tearDown()
     {
+        $this->loginAsAdmin();
         $this->api->delete('items', $this->item->id());
         $this->api->delete('items', $this->item2->id());
         $this->api->delete('item_sets', $this->itemSet->id());
+        $this->resetApplication();
+    }
+
+    protected function login($email, $password)
+    {
+        $services = $this->application->getServiceManager();
+        $auth = $services->get('Omeka\AuthenticationService');
+        $adapter = $auth->getAdapter();
+        $adapter->setIdentity($email);
+        $adapter->setCredential($password);
+        return $auth->authenticate();
+    }
+
+    protected function loginAsAdmin()
+    {
+        $this->login('admin@example.com', 'root');
+    }
+
+
+    protected function logout()
+    {
+        $auth = $this->services->get('Omeka\AuthenticationService');
+        $auth->clearIdentity();
+    }
+
+    protected function resetApplication()
+    {
+        $this->application = null;
     }
 
     public function testCurrentSite()

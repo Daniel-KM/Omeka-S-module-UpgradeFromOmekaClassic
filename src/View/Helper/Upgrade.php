@@ -1,12 +1,13 @@
 <?php
 namespace UpgradeFromOmekaClassic\View\Helper;
 
+use Interop\Container\ContainerInterface;
+use Omeka\Api\Exception\NotFoundException;
 use Omeka\Api\Representation\AbstractResourceRepresentation;
 use Omeka\Api\Representation\ItemRepresentation;
 use Omeka\Api\Representation\MediaRepresentation;
 use Zend\View\Exception\InvalidArgumentException;
 use Zend\View\Helper\AbstractHelper;
-use Omeka\Api\Exception\NotFoundException;
 
 /**
  * Return all functions converted from Omeka Classic to Omeka Semantic.
@@ -189,6 +190,13 @@ class Upgrade extends AbstractHelper
         'added' => 'created',
     ];
 
+    protected $services;
+
+    public function __construct(ContainerInterface $services)
+    {
+        $this->services = $services;
+    }
+
     /**
      * Returns this and allows access to all global functions of Omeka Classic.
      *
@@ -197,23 +205,6 @@ class Upgrade extends AbstractHelper
     public function __invoke()
     {
         return $this;
-    }
-
-    /**
-     * Helper to get the services.
-     *
-     * @deprecated: Usage of Zend\ServiceManager\ServiceManager::getServiceLocator
-     * is deprecated since v3.0.0; please use the container passed to the
-     * factory instead.
-     *
-     *@todo Get the service manager directly.
-     * @internal This module is not designed for a long life.
-     *
-     * @return \Zend\ServiceManager\ServiceManager
-     */
-    private function getServices()
-    {
-        return @$this->getView()->getHelperPluginManager()->getServiceLocator();
     }
 
     /**
@@ -488,7 +479,7 @@ class Upgrade extends AbstractHelper
         //         ? (bool) $config->theme->useInternalAssets
         //         : true;
         //     return $useInternalAssets;
-        $config = $this->getServices()->get('Config');
+        $config = $this->services->get('Config');
         $useInternalAssets = isset($config['assets']['use_externals'])
             ? !$config['assets']['use_externals']
             : true;
@@ -505,7 +496,7 @@ class Upgrade extends AbstractHelper
      */
     public function isInTheme($file)
     {
-        $currentTheme = $this->getServices()
+        $currentTheme = $this->services
             ->get('Omeka\Site\ThemeManager')
             ->getCurrentTheme();
         if (!$currentTheme) {
@@ -662,7 +653,7 @@ class Upgrade extends AbstractHelper
 
             // Not used in public themes.
             case 'path_to_convert':
-                $config = $this->getServices()->get('Config');
+                $config = $this->services->get('Config');
                 if (!isset($config['cli']['phpcli_path'])) {
                     return;
                 }
@@ -700,7 +691,7 @@ class Upgrade extends AbstractHelper
                 if (empty($site)) {
                     return;
                 }
-                $siteSettings = $this->getServices()
+                $siteSettings = $this->services
                     ->get('Omeka\SiteSettings');
                 $siteSettings->setSite($site);
                 return $siteSettings->get($name);
@@ -799,7 +790,7 @@ class Upgrade extends AbstractHelper
     //         throw new RuntimeException("Database not available!");
     //     }
     //     return $db;
-        return $this->getServices()->get('Omeka\Connection');
+        return $this->services->get('Omeka\Connection');
     }
 
     /**
@@ -1076,7 +1067,7 @@ class Upgrade extends AbstractHelper
     //     } catch (Zend_Exception $e) {
     //         return null;
     //     }
-        return $this->getServices()->get('Omeka\Acl');
+        return $this->services->get('Omeka\Acl');
     }
 
     /**
@@ -1518,7 +1509,7 @@ class Upgrade extends AbstractHelper
         // get_theme_option() is managed only for current site: useless else.
         /*
          if (empty($themeName)) {
-             $currentTheme = $this->getServices()
+             $currentTheme = $this->services
                 ->get('Omeka\Site\ThemeManager')
                 ->getCurrentTheme();
              if ($currentTheme) {
@@ -1819,7 +1810,7 @@ class Upgrade extends AbstractHelper
     //         return 'en-US';
     //     }
     //     return str_replace('_', '-', $locale->toString());
-        $config = $this->getServices()->get('Config');
+        $config = $this->services->get('Config');
         if (!isset($config['translator']['locale'])) {
             return 'en-US';
         }
@@ -2177,14 +2168,14 @@ class Upgrade extends AbstractHelper
 
         $view = $this->getView();
         if (is_null($paths)) {
-            $config = $this->getServices()
+            $config = $this->services
                 ->get('Config');
             $paths = empty($config['view_manager']['template_path_stack'])
                 ? []
                 : $config['view_manager']['template_path_stack'];
 
             // Check in theme before modules.
-            $currentTheme = $this->getServices()
+            $currentTheme = $this->services
                 ->get('Omeka\Site\ThemeManager')
                 ->getCurrentTheme();
             if ($currentTheme) {
@@ -2246,14 +2237,14 @@ class Upgrade extends AbstractHelper
 
         $view = $this->getView();
         if (is_null($paths)) {
-            $config = $this->getServices()
+            $config = $this->services
                 ->get('Config');
             $paths = empty($config['view_manager']['template_path_stack'])
                 ? []
                 : $config['view_manager']['template_path_stack'];
 
             // Check in theme before modules.
-            $currentTheme = $this->getServices()
+            $currentTheme = $this->services
                 ->get('Omeka\Site\ThemeManager')
                 ->getCurrentTheme();
             if ($currentTheme) {

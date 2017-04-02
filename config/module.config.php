@@ -9,10 +9,12 @@ $siteSlug = '';
 $config = [
     'view_helpers' => [
         'invokables' => [
-            'upgrade' => 'UpgradeFromOmekaClassic\View\Helper\Upgrade',
             'allElementTexts' => 'UpgradeFromOmekaClassic\View\Helper\AllElementTexts',
             'fileMarkup' => 'UpgradeFromOmekaClassic\View\Helper\FileMarkup',
             'metadata' => 'UpgradeFromOmekaClassic\View\Helper\Metadata',
+        ],
+        'factories' => [
+            'upgrade' => 'UpgradeFromOmekaClassic\Service\ViewHelper\UpgradeFactory',
         ],
     ],
 ];
