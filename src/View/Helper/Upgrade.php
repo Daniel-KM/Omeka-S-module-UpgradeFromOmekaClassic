@@ -55,7 +55,7 @@ class Upgrade extends AbstractHelper
         'GuestUser' => false,
         'HistoryLog' => false,
         'MultiCollections' => false,
-        'NeatlineTime' => false,
+        'NeatlineTime' => 'Timeline',
         'OpenlayersZoom' => false,
         'Rating' => false,
         'Scripto' => false,
@@ -1084,7 +1084,7 @@ class Upgrade extends AbstractHelper
     {
         // NOTE Useless in public theme of Omeka S.
     //    return (bool) Zend_Controller_Front::getInstance()->getParam('admin');
-        return false;
+        return (boolean) $this->getView()->params()->fromRoute('__ADMIN__');
     }
 
     /**
