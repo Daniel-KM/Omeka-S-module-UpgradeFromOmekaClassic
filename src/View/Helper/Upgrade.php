@@ -249,10 +249,11 @@ class Upgrade extends AbstractHelper
     {
         if (is_object($modelName)) {
             $modelName = get_class($name);
-            $pos = strrpos($modelName, '\\');
-            if ($pos !== false) {
-                $modelName = substr($modelName, $pos + 1);
-            }
+        }
+
+        $pos = strrpos($modelName, '\\');
+        if ($pos !== false) {
+            $modelName = substr($modelName, $pos + 1);
         }
 
         $var = Inflector::underscore(
@@ -3238,11 +3239,13 @@ class Upgrade extends AbstractHelper
         // NOTE Add specific classes for resource type and action.
         $params = $this->getView()->params()->fromRoute();
         $bodyClasses = isset($attributes['class']) ? $attributes['class'] . ' ' : '';
-        if (isset($params['__CONTROLLER__'])) {
-            $controller = $params['__CONTROLLER__'];
+        if (isset($params['controller'])) {
+            $controller = $params['controller'];
             $controllers = [
+                'Omeka\Controller\Site\Item' => 'items',
                 'item' => 'items',
                 'items' => 'items',
+                'Omeka\Controller\Site\ItemSet' => 'collections',
                 'item-set' => 'collections',
                 'item-sets' => 'collections',
             ];
@@ -5117,7 +5120,7 @@ class Upgrade extends AbstractHelper
     //         $queryParams = $_GET;
         $view = $this->getView();
         $request = $view->params()->fromRoute();
-        if ('item' == $request['__CONTROLLER__'] && 'browse' == $request['action']) {
+        if ('Omeka\Controller\Site\Item' == $request['controller'] && 'browse' == $request['action']) {
             $queryParams = $view->params()->fromQuery();;
             unset($queryParams['submit_search']);
             unset($queryParams['page']);
