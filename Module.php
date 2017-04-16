@@ -9,6 +9,20 @@ use Zend\Form\Fieldset;
 
 class Module extends AbstractModule
 {
+    /**
+     * Site settings and their default values.
+     *
+     * @var array
+     */
+    protected $siteSettings = [
+        'upgrade_use_advanced_search' => false,
+        'upgrade_search_resource_types' => [],
+        'upgrade_show_vocabulary_headings' => true,
+        'upgrade_show_empty_properties' => false,
+        'upgrade_use_square_thumbnail' => true,
+        'upgrade_tag_delimiter' => ',',
+    ];
+
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -37,13 +51,6 @@ class Module extends AbstractModule
         $fieldset = new Fieldset('upgrade_from');
         $fieldset->setLabel('Upgrade from Omeka Classic');
 
-        $useAdvancedSearch = (boolean) $siteSettings->get('upgrade_use_advanced_search', false);
-        $searchResourceTypes = $siteSettings->get('upgrade_search_resource_types', []);
-        $showVocabularyHeadings = (boolean) $siteSettings->get('upgrade_show_vocabulary_headings', true);
-        $showEmptyProperties = (boolean) $siteSettings->get('upgrade_show_empty_properties', false);
-        $useSquareThumbnail = (boolean) $siteSettings->get('upgrade_use_square_thumbnail', true);
-        $tagDelimiter = $siteSettings->get('upgrade_tag_delimiter', ',');
-
         $fieldset->add([
             'name' => 'upgrade_use_advanced_search',
             'type' => 'checkbox',
@@ -52,10 +59,17 @@ class Module extends AbstractModule
                 'info' => 'Check this box if you wish to allow users to search your whole site by record (i.e. item, item set, media).', // @translate
             ],
             'attributes' => [
-                'value' => $useAdvancedSearch,
+                'value' => $siteSettings->get(
+                    'upgrade_use_advanced_search',
+                    $this->siteSettings['upgrade_use_advanced_search']
+                ),
             ],
         ]);
 
+        $searchResourceTypes = $siteSettings->get(
+            'upgrade_search_resource_types',
+            $this->siteSettings['upgrade_search_resource_types']
+        );
         $valueOptions = [
             'Item' => [
                 'label' => 'Item', // @translate
@@ -79,7 +93,6 @@ class Module extends AbstractModule
                 'disabled' => true,
             ],
         ];
-
         $fieldset->add([
             'name' => 'upgrade_search_resource_types',
             'type' => 'multiCheckbox',
@@ -101,7 +114,10 @@ class Module extends AbstractModule
                 'label' => 'Show Vocabulary Headings', // @translate
             ],
             'attributes' => [
-                'value' => $showVocabularyHeadings,
+                'value' => $siteSettings->get(
+                    'upgrade_show_vocabulary_headings',
+                    $this->siteSettings['upgrade_show_vocabulary_headings']
+                ),
             ],
         ]);
 
@@ -112,7 +128,10 @@ class Module extends AbstractModule
                 'label' => 'Show Empty Properties', // @translate
             ],
             'attributes' => [
-                'value' => $showEmptyProperties,
+                'value' => $siteSettings->get(
+                    'upgrade_show_empty_properties',
+                    $this->siteSettings['upgrade_show_empty_properties']
+                ),
             ],
         ]);
 
@@ -124,7 +143,10 @@ class Module extends AbstractModule
                 'info' => 'Use square-cropped images by default wherever thumbnails appear in the public interface.', // @translate
             ],
             'attributes' => [
-                'value' => $useSquareThumbnail,
+                'value' => $siteSettings->get(
+                    'upgrade_use_square_thumbnail',
+                    $this->siteSettings['upgrade_use_square_thumbnail']
+                ),
             ],
         ]);
 
@@ -136,7 +158,10 @@ class Module extends AbstractModule
                 'info' => 'Separate tags using this character or string. Be careful when changing this setting. You run the risk of splitting tags that contain the old delimiter.', // @translate
             ],
             'attributes' => [
-                'value' => $tagDelimiter,
+                'value' => $siteSettings->get(
+                    'upgrade_tag_delimiter',
+                    $this->siteSettings['upgrade_tag_delimiter']
+                ),
                 'disabled' => true,
             ],
         ]);

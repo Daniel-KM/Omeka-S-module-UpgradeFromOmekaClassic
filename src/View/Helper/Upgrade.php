@@ -5316,7 +5316,7 @@ class Upgrade extends AbstractHelper
         if ($headerBg) {
             return '<style type="text/css" media="screen">header {'
                 . 'background:transparent url("' . $headerBg . '") center left no-repeat;'
-                    . '}</style>';
+                . '}</style>';
         }
     }
 

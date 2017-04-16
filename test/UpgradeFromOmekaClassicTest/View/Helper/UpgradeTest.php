@@ -81,23 +81,24 @@ class UpgradeTest extends TestCase
             ]
         ];
 
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'api',
-            'assetUrl',
-            'basePath',
-            'escapeHtml',
-            'escapeJs',
-            'getHelperPluginManager',
-            'params',
-            'searchFilters',
-            'serverUrl',
-            'setting',
-            'themeSettingAssetUrl',
-            'translate',
-            'userIsAllowed',
-            'vars'
-        ]
-        // 'Zend\\View\\Helper\\ViewModel',
+        $view = $this->getMock(
+            'Zend\View\Renderer\PhpRenderer',
+            [
+                'api',
+                'assetUrl',
+                'basePath',
+                'escapeHtml',
+                'escapeJs',
+                'getHelperPluginManager',
+                'params',
+                'searchFilters',
+                'serverUrl',
+                'setting',
+                'themeSettingAssetUrl',
+                'translate',
+                'userIsAllowed',
+                'vars'
+            ]
         );
         $view->expects($this->any())
             ->method('api')
