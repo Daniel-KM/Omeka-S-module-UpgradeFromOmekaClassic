@@ -64,7 +64,7 @@ class Upgrade extends AbstractHelper
         'SimpleVocabPlus' => false,
         'SocialBookmarking' => 'Sharing',
         'Stats' => false,
-        'Tagging' => false,
+        'Tagging' => 'Tagging',
         'Taxonomy' => false,
         'UniversalViewer' => 'UniversalViewer',
         'ZoteroImport' => 'ZoteroImport',
