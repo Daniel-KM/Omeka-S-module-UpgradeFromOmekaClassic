@@ -102,10 +102,10 @@ class Upgrade extends AbstractHelper
         'session' => 'session',
         'tag' => '',
 
-        'simple_pages_page' => 'page',
+        'simple_pages_page' => 'site_page',
 
         'exhibit' => 'site',
-        'exhibit_page' => 'page',
+        'exhibit_page' => 'site_page',
         'exhibit_page_block' => 'site_page_block',
         'exhibit_block_attachment' => 'site_block_attachment',
 
