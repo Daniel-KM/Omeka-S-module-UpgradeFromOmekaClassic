@@ -42,13 +42,13 @@ if ($siteSlug) {
                     'route' => '/items/show/:id',
                     'defaults' => [
                         '__NAMESPACE__' => 'Omeka\Controller\Site',
-                        '__SITE__'      => true,
-                        'controller'    => 'item',
-                        'action'        => 'show',
-                        'id'            => '\d+',
+                        '__SITE__' => true,
+                        'controller' => 'item',
+                        'action' => 'show',
+                        'id' => '\d+',
                         // Here is the slug of the site to use as main site.
                         // It must be an existing and public site.
-                        'site-slug'     => $siteSlug,
+                        'site-slug' => $siteSlug,
                     ],
                 ],
             ],
@@ -61,15 +61,15 @@ if ($siteSlug) {
                     'route' => '/',
                     'defaults' => [
                         '__NAMESPACE__' => 'Omeka\Controller\Site',
-                        '__SITE__'      => true,
-                        'controller'    => 'Page',
-                        'action'        => 'show',
+                        '__SITE__' => true,
+                        'controller' => 'Page',
+                        'action' => 'show',
                         // Here is the slug of the site to use as main site.
                         // It must be an existing and public site.
-                        'site-slug'     => $siteSlug,
+                        'site-slug' => $siteSlug,
                         // Here is the slug of the page to use as home page for
                         // the main site. It must be an existing public page.
-                        'page-slug'     => 'homepage-site',
+                        'page-slug' => 'homepage-site',
                     ],
                 ],
             ],

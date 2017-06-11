@@ -3,7 +3,6 @@
 namespace UpgradeFromOmekaClassic;
 
 use Omeka\Module\AbstractModule;
-use Zend\EventManager\Event;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Form\Fieldset;
 

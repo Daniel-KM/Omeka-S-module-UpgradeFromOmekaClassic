@@ -11,7 +11,6 @@ use Zend\Mvc\Controller\Plugin\Params;
 
 class UpgradeTest extends TestCase
 {
-
     protected $upgrade;
 
     protected $application;
@@ -78,7 +77,7 @@ class UpgradeTest extends TestCase
             ],
             'itemSets' => [
                 $this->itemSet,
-            ]
+            ],
         ];
 
         $view = $this->getMock(
@@ -97,7 +96,7 @@ class UpgradeTest extends TestCase
                 'themeSettingAssetUrl',
                 'translate',
                 'userIsAllowed',
-                'vars'
+                'vars',
             ]
         );
         $view->expects($this->any())
@@ -176,7 +175,6 @@ class UpgradeTest extends TestCase
     {
         $this->login('admin@example.com', 'root');
     }
-
 
     protected function logout()
     {

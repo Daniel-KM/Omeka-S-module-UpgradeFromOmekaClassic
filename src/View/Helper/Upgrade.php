@@ -21,7 +21,6 @@ use Zend\View\Helper\AbstractHelper;
  */
 class Upgrade extends AbstractHelper
 {
-
     /**
      * Mapping of plugins between Omeka C and Omeka S
      *
@@ -212,7 +211,6 @@ class Upgrade extends AbstractHelper
      *
      * @param string $name The name of the function not upgraded.
      * @param mix
-     * @return void
      */
     public function fallback(...$params)
     {
@@ -222,7 +220,7 @@ class Upgrade extends AbstractHelper
      * Map the name of a plugin to the name of a module.
      *
      * @param string $pluginName
-     * @return boolean|string True if plugin is integrated, false if not
+     * @return bool|string True if plugin is integrated, false if not
      * upgraded, else the matching module name, else the plugin name.
      */
     public function mapPluginToModule($pluginName)
@@ -239,8 +237,8 @@ class Upgrade extends AbstractHelper
      *
      * @param string|object $modelName The name of the model, in any format.
      * @param string $format "underscore" (default), "camelize", "classify", "html-id".
-     * @param boolean $plural Return a plural name if true, else a singular.
-     * @param boolean $asEntity Remove the generic part ("Adapter", "Controller",
+     * @param bool $plural Return a plural name if true, else a singular.
+     * @param bool $asEntity Remove the generic part ("Adapter", "Controller",
      * "Form" and "Representation").
      * @return string The matching model name of Omeka S, usable in api and
      * queries.
@@ -270,7 +268,7 @@ class Upgrade extends AbstractHelper
         // Manage plural/singular, with an exception.
         // Manage an exception.
         if ($var == 'media' || $var == 'medium') {
-            $var =  $plural ? 'media' : 'media';
+            $var = $plural ? 'media' : 'media';
         } elseif ($plural) {
             $var = \Doctrine\Common\Inflector\Inflector::pluralize($var);
         }
@@ -306,7 +304,7 @@ class Upgrade extends AbstractHelper
      * Map the name of the matching format from Omeka C to Omeka S.
      *
      * @param string $format The name of the format.
-     * @param boolean $plural Return a plural name if true, else a singular.
+     * @param bool $plural Return a plural name if true, else a singular.
      * @return string The matching format in Omeka S.
      */
     public function mapDerivative($format = null, /* bool */ $plural = false)
@@ -317,7 +315,7 @@ class Upgrade extends AbstractHelper
             if (is_null($useSquareThumbnail)) {
                 $useSquareThumbnail = $this->get_option('use_square_thumbnail') == 1;
             }
-            $format =$useSquareThumbnail ? 'square' : 'medium';
+            $format = $useSquareThumbnail ? 'square' : 'medium';
         } else {
             $var = Inflector::underscore(
                 \Doctrine\Common\Inflector\Inflector::singularize($format));
@@ -407,7 +405,7 @@ class Upgrade extends AbstractHelper
      */
     public function mapQuery($query)
     {
-        $result = array();
+        $result = [];
         foreach ($query as $key => $value) {
             if (isset($this->mapping_query_keys[$key])) {
                 $key = $this->mapping_query_keys[$key];
@@ -2189,11 +2187,11 @@ class Upgrade extends AbstractHelper
                 [
                     '~/view$~',
                     '~/view-shared$~',
-                    '~/view-admin$~'
+                    '~/view-admin$~',
                 ],
                 '/asset',
                 $paths
-                );
+            );
         }
 
         // NOTE Useless in public theme of Omeka S.
@@ -2258,7 +2256,7 @@ class Upgrade extends AbstractHelper
                 [
                     '~/view$~',
                     '~/view-shared$~',
-                    '~/view-admin$~'
+                    '~/view-admin$~',
                 ],
                 '/asset',
                 $paths
@@ -2364,7 +2362,7 @@ class Upgrade extends AbstractHelper
             $query['site_id'] = $site->id();
         }
 
-        $response= $this->getView()->api()->search('item_sets', $query);
+        $response = $this->getView()->api()->search('item_sets', $query);
         return $response->getContent();
     }
 
@@ -2486,7 +2484,7 @@ class Upgrade extends AbstractHelper
     //     }
     //     return $output;
         if (!is_array($files)) {
-            $files = array($files);
+            $files = [$files];
         }
         $view = $this->getView();
         $helper = $this->getView()->plugin('fileMarkup');
@@ -2537,7 +2535,7 @@ class Upgrade extends AbstractHelper
             $query['site_id'] = $site->id();
         }
 
-        $response= $this->getView()->api()->search('media', $query);
+        $response = $this->getView()->api()->search('media', $query);
         return $response->getContent();
     }
 
@@ -2865,7 +2863,7 @@ class Upgrade extends AbstractHelper
             $query['site_id'] = $site->id();
         }
 
-        $response= $this->getView()->api()->search($resourceType, $query);
+        $response = $this->getView()->api()->search($resourceType, $query);
         return $response->getContent();
     }
 
@@ -3848,7 +3846,7 @@ class Upgrade extends AbstractHelper
         if ($text === null) {
     //         $text = __('View');
             $text = $this->stranslate('View');
-            }
+        }
     //     $attr = !empty($props) ? ' ' . tag_attributes($props) : '';
     //     return '<a href="'. html_escape($url) . '"' . $attr . '>' . $text . '</a>';
         $attr = !empty($props) ? ' ' . $this->tag_attributes($props) : '';
@@ -4332,7 +4330,7 @@ class Upgrade extends AbstractHelper
 
     //     return get_view()->paginationControl($paginator, $scrollingStyle, $partial);
         $partialName = isset($options['partial_file']) ? $options['partial_file'] : null;
-        $totalCount = isset($options['total_results']) ? (integer) $options['total_results'] : null;;
+        $totalCount = isset($options['total_results']) ? (integer) $options['total_results'] : null;
         $currentPage = isset($options['page']) ? (integer) $options['page'] : null;
         $perPage = isset($options['per_page']) ? (integer) $options['per_page'] : null;
 
@@ -4678,7 +4676,7 @@ class Upgrade extends AbstractHelper
             $query['site_id'] = $site->id();
         }
 
-        $response= $this->getView()->api()->search('tags', $query);
+        $response = $this->getView()->api()->search('tags', $query);
         return $response->getContent();
     }
 
@@ -5121,7 +5119,7 @@ class Upgrade extends AbstractHelper
         $view = $this->getView();
         $request = $view->params()->fromRoute();
         if ('Omeka\Controller\Site\Item' == $request['controller'] && 'browse' == $request['action']) {
-            $queryParams = $view->params()->fromQuery();;
+            $queryParams = $view->params()->fromQuery();
             unset($queryParams['submit_search']);
             unset($queryParams['page']);
             unset($queryParams['submit']);
@@ -5195,13 +5193,13 @@ class Upgrade extends AbstractHelper
     // public function admin_url()
     public function admin_url(...$params)
     {
-    //     set_theme_base_url('admin');
+        //     set_theme_base_url('admin');
     //     $args = func_get_args();
     //     $url = call_user_func_array('url', $args);
     //     revert_theme_base_url();
     //     return $url;
         // Used in the admin bar only.
-        $url =  $this->url(...$params);
+        $url = $this->url(...$params);
         $basePath = $this->getView()->basePath();
         if (empty($basePath) || $basePath === '/') {
             return '/admin' . $url;

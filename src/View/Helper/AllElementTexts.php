@@ -95,7 +95,7 @@ class AllElementTexts extends AbstractHelper
      * @return string|array
      */
     // public function allElementTexts($record, array $options = array())
-    public function __invoke($record, array $options = array())
+    public function __invoke($record, array $options = [])
     {
         // Use $record->values() in most cases.
         if (empty($record)) {
@@ -272,7 +272,7 @@ class AllElementTexts extends AbstractHelper
                     if (in_array($itemTypeElementSetName, $this->_elementSetsToShow) or
     //                 in_array(ElementSet::ITEM_TYPE_NAME, $this->_elementSetsToShow)) {
                     in_array('Item Type Metadata', $this->_elementSetsToShow)) {
-                            $elementsBySet[$itemTypeElementSetName] = $itemTypeElements;
+                        $elementsBySet[$itemTypeElementSetName] = $itemTypeElements;
                     }
                 }
                 else {
