@@ -249,7 +249,8 @@ class Metadata extends AbstractHelper
             case 'metadata': return $record->mediaData();
 
             // For simple pages.
-            case 'text': return $this->getView()->vars()->pageViewModel->getVariable('content');
+            case 'text': $pageViewModel = $this->getView()->vars()->pageViewModel;
+                return is_null($pageViewModel) ? '' : $pageViewModel->getVariable('content');
 
             // For exhibits.
             case 'slug': return $record->slug();
