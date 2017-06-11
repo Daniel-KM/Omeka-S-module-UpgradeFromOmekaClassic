@@ -1,4 +1,5 @@
 <?php
+namespace UpgradeFromOmekaClassic;
 
 // Here is the slug of the site to use as main site in order to keep aliases
 // from Omeka Classic. It must be an existing and public site.
@@ -9,12 +10,12 @@ $siteSlug = '';
 $config = [
     'view_helpers' => [
         'invokables' => [
-            'allElementTexts' => 'UpgradeFromOmekaClassic\View\Helper\AllElementTexts',
-            'fileMarkup' => 'UpgradeFromOmekaClassic\View\Helper\FileMarkup',
-            'metadata' => 'UpgradeFromOmekaClassic\View\Helper\Metadata',
+            'allElementTexts' => View\Helper\AllElementTexts::class,
+            'fileMarkup' => View\Helper\FileMarkup::class,
+            'metadata' => View\Helper\Metadata::class,
         ],
         'factories' => [
-            'upgrade' => 'UpgradeFromOmekaClassic\Service\ViewHelper\UpgradeFactory',
+            'upgrade' => Service\ViewHelper\UpgradeFactory::class,
         ],
     ],
 ];
