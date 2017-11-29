@@ -217,6 +217,14 @@ class Upgrade extends AbstractHelper
     }
 
     /**
+     * @param string $name
+     * @param array $arguments
+     */
+    public function __call($name, $arguments)
+    {
+    }
+
+    /**
      * Map the name of a plugin to the name of a module.
      *
      * @param string $pluginName
