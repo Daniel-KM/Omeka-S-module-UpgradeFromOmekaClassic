@@ -18,6 +18,18 @@ $config = [
             'upgrade' => Service\ViewHelper\UpgradeFactory::class,
         ],
     ],
+    'upgradefromomekaclassic' => [
+        'settings' => [
+        ],
+        'site_settings' => [
+            'upgrade_use_advanced_search' => false,
+            'upgrade_search_resource_types' => [],
+            'upgrade_show_vocabulary_headings' => true,
+            'upgrade_show_empty_properties' => false,
+            'upgrade_use_square_thumbnail' => true,
+            'upgrade_tag_delimiter' => ',',
+        ],
+    ],
 ];
 
 if ($siteSlug) {
