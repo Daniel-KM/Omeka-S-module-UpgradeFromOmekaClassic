@@ -7,14 +7,13 @@ Upgrade from Omeka Classic
 reuse a theme built for [Omeka 2] and upgraded via the plugin [Upgrade to Omeka Semantic].
 
 Furthermore, it adds a route for old urls `items/show/#id` to the new format
-`item/#id` and redirects them to the items of the specified site of Omeka S.
+`item/#id` and redirects them to the items of the specified site of Omeka S, and
+the same for collections, files and home page.
 
 If the theme was not upgraded, this module is useless.
 
 For more information about the upgrade, see [Upgrade to Omeka Semantic]. See a
 full list of [modules] and [themes] for Omeka S.
-
-Omeka S is still in a beta phase, but it can be already used for common sites.
 
 
 Installation
@@ -26,7 +25,7 @@ Then install it like any other Omeka module and follow the config instructions.
 
 *IMPORTANT*
 
-If you change the slug of the main site, don't forget to set it in the config
+If you change the slug of the main site, don’t forget to set it in the config
 file `config/module.config.php`.
 
 
@@ -35,14 +34,13 @@ Usage
 
 As a compatibility layer, some visual glitches and bugs may subsist, in
 particular when the theme is heavily customized.
+
 You may check the themes and change the main layout and each view in order to
 replace old Omeka Classic functions by Omeka S ones. See the [official themes]
 to discover the new  methods, or check the integrated views in `application/view-admin`
 and `application/view-shared`.
 
-If you use a new theme, you don't need this plugin. If you just want to keep
-routes, simply copy the config of the routes from the file `config/module.config.php`
-to the main config of the site `config/local.config.php`.
+If you use a new theme, you don’t need this plugin.
 
 
 Warning
@@ -50,8 +48,8 @@ Warning
 
 Use it at your own risk.
 
-It’s always recommended to backup your files and database regularly so you can
-roll back if needed.
+It’s always recommended to backup your files and your databases and to check
+your archives regularly so you can roll back if needed.
 
 
 Troubleshooting
