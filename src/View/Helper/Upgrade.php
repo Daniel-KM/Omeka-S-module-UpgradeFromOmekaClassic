@@ -34,28 +34,28 @@ class Upgrade extends AbstractHelper
         'ExhibitBuilder' => true,
         'ItemRelations' => true,
         'MoreUserRoles' => true,
+        'MultiCollections' => true,
         'SimplePages' => true,
 
         'ArchiveFolder' => false,
-        'Ark' => false,
+        'Ark' => 'Ark',
         'BeamMeUpToInternetArchive' => false,
         'BeamMeUpToSoundcloud' => false,
-        'CleanUrl' => false,
-        'Coins' => false,
+        'CleanUrl' => 'CleanUrl',
+        'Coins' => 'Coins',
         'CollectionTree' => false,
         'Commenting' => false,
         'Contribution' => 'Collecting',
         'CsvImport' => 'CSVImport',
-        'CsvImportPlus' => false,
-        'Dropbox' => false,
+        'CsvImportPlus' => 'CsvImport',
+        'Dropbox' => 'FileSideload',
         'EmbedCodes' => 'Sharing',
         'Escher' => 'EasyInstall',
         'Geolocation' => 'Mapping',
-        'GuestUser' => false,
+        'GuestUser' => 'GuestUser',
         'HistoryLog' => false,
-        'MultiCollections' => false,
         'NeatlineTime' => 'Timeline',
-        'OpenlayersZoom' => false,
+        'OpenlayersZoom' => 'IiifServer',
         'Rating' => false,
         'Scripto' => false,
         'SimpleContact' => false,
@@ -63,7 +63,7 @@ class Upgrade extends AbstractHelper
         'SimpleVocabPlus' => false,
         'SocialBookmarking' => 'Sharing',
         'Stats' => false,
-        'Tagging' => 'Tagging',
+        'Tagging' => 'Folksonomy',
         'Taxonomy' => false,
         'UniversalViewer' => 'UniversalViewer',
         'ZoteroImport' => 'ZoteroImport',
@@ -100,7 +100,7 @@ class Upgrade extends AbstractHelper
         'schema_migration' => 'migration',
         'search_text' => '',
         'session' => 'session',
-        'tag' => '',
+        'tag' => 'tag',
 
         'simple_pages_page' => 'site_page',
 
@@ -491,7 +491,7 @@ class Upgrade extends AbstractHelper
      * @internal This may be useful to use these functions with standard themes.
      *
      * @param string $file Path of the template, relative to the view.
-     * @return boolean
+     * @return bool
      */
     public function isInTheme($file)
     {
@@ -524,6 +524,7 @@ class Upgrade extends AbstractHelper
             ->fromRoute('site-slug');
         if ($slug) {
             try {
+                // TODO Sites are not available via read or search slug.
                 $site = $view
                     ->api()
                     ->read('sites', ['slug' => $slug]);
@@ -550,7 +551,7 @@ class Upgrade extends AbstractHelper
      * According to Omeka S, the home page is not the first link in the menu,
      * but the first page in the menu.
      *
-     * @return boolean
+     * @return bool
      */
     public function isHomePage()
     {
@@ -594,9 +595,9 @@ class Upgrade extends AbstractHelper
      * Return the size of a media file.
      *
      * @param MediaRepresentation $media
-     * @return integer|null|false
+     * @return int|null|false
      */
-    function mediaFilesize(MediaRepresentation $media)
+    public function mediaFilesize(MediaRepresentation $media)
     {
         if (!$media->hasOriginal()) {
             return;
@@ -691,8 +692,8 @@ class Upgrade extends AbstractHelper
                     return;
                 }
                 $siteSettings = $this->services
-                    ->get('Omeka\SiteSettings');
-                $siteSettings->setSite($site);
+                    ->get('Omeka\Settings\Site');
+                $siteSettings->setTargetId($site->id());
                 return $siteSettings->get($name);
 
             case 'administrator_email':
