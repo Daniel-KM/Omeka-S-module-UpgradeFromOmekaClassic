@@ -55,11 +55,10 @@ class UpgradeTest extends TestCase
             'sort_order' => 'asc',
         ];
         $params = new Params($paramsRoute);
-        $params = $this->getMock(
-            'Omeka\View\Helper\Params',
-            ['fromRoute', 'fromQuery'],
-            [$params]
-        );
+        $params = $this->getMockBuilder('Omeka\View\Helper\Params')
+            ->setMethods(['fromRoute', 'fromQuery'])
+            ->setConstructorArgs([$params])
+            ->getMock();
         $params->expects($this->any())
             ->method('fromRoute')
             ->with('site-slug')
@@ -80,9 +79,8 @@ class UpgradeTest extends TestCase
             ],
         ];
 
-        $view = $this->getMock(
-            'Zend\View\Renderer\PhpRenderer',
-            [
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods([
                 'api',
                 'assetUrl',
                 'basePath',
@@ -97,8 +95,8 @@ class UpgradeTest extends TestCase
                 'translate',
                 'userIsAllowed',
                 'vars',
-            ]
-        );
+            ])
+            ->getMock();
         $view->expects($this->any())
             ->method('api')
             ->willReturn($this->api);
@@ -215,7 +213,9 @@ class UpgradeTest extends TestCase
 
     public function testCurrentUser()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['identity']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['identity'])
+            ->getMock();
         $view->expects($this->once())
             ->method('identity')
             ->willReturn('foo');
@@ -231,11 +231,15 @@ class UpgradeTest extends TestCase
     public function testDebug()
     {
         $this->markTestIncomplete('TODO Set logger.');
-        $logger = $this->getMock('Omeka\Logger', ['log']);
+        $logger = $this->getMockBuilder('Omeka\Logger')
+            ->setMethods(['log'])
+            ->getMock();
         $logger->expects($this->once())
             ->method('log')
             ->willReturnArgument(1);
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['logger']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods( ['logger'])
+            ->getMock();
         $view->expects($this->once())
             ->method('logger')
             ->willReturn($logger);
@@ -246,11 +250,15 @@ class UpgradeTest extends TestCase
     public function testLog()
     {
         $this->markTestIncomplete('TODO Set logger.');
-        $logger = $this->getMock('Omeka\Logger', ['log']);
+        $logger = $this->getMockBuilder('Omeka\Logger')
+            ->setMethods(['log'])
+            ->getMock();
         $logger->expects($this->once())
             ->method('log')
             ->willReturnArgument(1);
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['logger']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['logger'])
+            ->getMock();
         $view->expects($this->once())
             ->method('logger')
             ->willReturn($logger);
@@ -266,7 +274,9 @@ class UpgradeTest extends TestCase
     public function testFirePluginHook()
     {
         $this->markTestIncomplete('TODO Set theme.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['partial']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('partial');
@@ -384,7 +394,9 @@ class UpgradeTest extends TestCase
 
     public function testGetThemeOption()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['themeSetting']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['themeSetting'])
+            ->getMock();
         $view->expects($this->once())
             ->method('themeSetting')
             ->with('foo_home_header')
@@ -503,8 +515,7 @@ class UpgradeTest extends TestCase
 
     public function testSrc()
     {
-        // $this->expectException(InvalidArgumentException::class);
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->upgrade->src('foo', 'bar', 'ext');
     }
 
@@ -524,11 +535,13 @@ class UpgradeTest extends TestCase
 
     public function testRandomFeaturedCollection()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'getHelperPluginManager',
-            'api',
-            'partial',
-        ]);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods([
+                'getHelperPluginManager',
+                'api',
+                'partial',
+            ])
+            ->getMock();
         $view->expects($this->any())
             ->method('getHelperPluginManager')
             ->willReturn($this->services);
@@ -567,9 +580,9 @@ class UpgradeTest extends TestCase
 
     public function testMaxFileSize()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'uploadLimit',
-        ]);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['uploadLimit'])
+            ->getMock();
         $view->expects($this->once())
             ->method('uploadLimit')
             ->willReturn(128);
@@ -601,9 +614,9 @@ class UpgradeTest extends TestCase
 
     public function testSearchForm()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'partial',
-        ]);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('foo');
@@ -649,7 +662,9 @@ class UpgradeTest extends TestCase
     public function testCommon()
     {
         $this->markTestIncomplete('TODO Set theme.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['partial']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('partial');
@@ -660,7 +675,9 @@ class UpgradeTest extends TestCase
     public function testHead()
     {
         $this->markTestIncomplete('TODO Set theme.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['partial']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('partial');
@@ -671,7 +688,9 @@ class UpgradeTest extends TestCase
     public function testFoot()
     {
         $this->markTestIncomplete('TODO Set theme.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['partial']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('partial');
@@ -682,7 +701,9 @@ class UpgradeTest extends TestCase
     public function testFlash()
     {
         $this->markTestIncomplete('TODO Set messages.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['messages']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['messages'])
+            ->getMock();
         $view->expects($this->once())
             ->method('messages')
             ->willReturn('foo');
@@ -692,7 +713,9 @@ class UpgradeTest extends TestCase
 
     public function testOption()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['setting']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['setting'])
+            ->getMock();
         $view->expects($this->any())
         ->method('setting')
         ->with('foo')
@@ -745,8 +768,7 @@ class UpgradeTest extends TestCase
         $this->assertEquals(2, count($records));
         $records = $this->upgrade->get_loop_records('collections');
         $this->assertEquals(1, count($records));
-        // $this->expectException(BadRequestException::class);
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $records = $this->upgrade->get_loop_records('foo');
     }
 
@@ -767,8 +789,7 @@ class UpgradeTest extends TestCase
     {
         $this->assertEquals($this->item->id(), $this->upgrade->get_current_record('item')->id());
         $this->assertEquals($this->itemSet->id(), $this->upgrade->get_current_record('collection')->id());
-        // $this->expectException(BadRequestException::class);
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $records = $this->upgrade->get_current_record('foo');
     }
 
@@ -782,8 +803,7 @@ class UpgradeTest extends TestCase
         $this->assertEquals($this->itemSet->id(), $record->id());
         $record = $this->upgrade->get_record_by_id('File', $this->item->id());
         $this->assertNull($record);
-        // $this->expectException(BadRequestException::class);
-        $this->setExpectedException(BadRequestException::class);
+        $this->expectException(BadRequestException::class);
         $item = $this->upgrade->get_record_by_id('Foo', $this->item->id());
     }
 
@@ -797,9 +817,9 @@ class UpgradeTest extends TestCase
     public function testOutputFormatList()
     {
         $this->markTestIncomplete('TODO Set theme.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'partial',
-        ]);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('partial');
@@ -829,9 +849,9 @@ class UpgradeTest extends TestCase
 
     public function testMetadata()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'metadata',
-        ]);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['metadata'])
+            ->getMock();
         $view->expects($this->once())
             ->method('metadata')
             ->willReturn('foo');
@@ -841,9 +861,9 @@ class UpgradeTest extends TestCase
 
     public function testAllElementTexts()
     {
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', [
-            'allElementTexts',
-        ]);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['allElementTexts'])
+            ->getMock();
         $view->expects($this->once())
             ->method('allElementTexts')
             ->willReturn('foo');
@@ -895,7 +915,9 @@ class UpgradeTest extends TestCase
     public function testItemsSearchForm()
     {
         $this->markTestIncomplete('TODO Set theme.');
-        $view = $this->getMock('Zend\View\Renderer\PhpRenderer', ['partial']);
+        $view = $this->getMockBuilder('Zend\View\Renderer\PhpRenderer')
+            ->setMethods(['partial'])
+            ->getMock();
         $view->expects($this->once())
             ->method('partial')
             ->willReturn('partial');
