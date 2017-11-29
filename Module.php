@@ -3,12 +3,19 @@
 namespace UpgradeFromOmekaClassic;
 
 use Omeka\Module\AbstractModule;
+use UpgradeFromOmekaClassic\Form\ConfigForm;
 use Zend\EventManager\Event;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Form\Fieldset;
 use Zend\Form\Element\Text;
 use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\MultiCheckbox;
+use Zend\Mvc\Controller\AbstractController;
+use Zend\Mvc\MvcEvent;
+use Zend\Router\Http\Literal;
+use Zend\Router\Http\Segment;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Renderer\PhpRenderer;
 
 class Module extends AbstractModule
 {
@@ -17,19 +24,96 @@ class Module extends AbstractModule
         return include __DIR__ . '/config/module.config.php';
     }
 
+    public function onBootstrap(MvcEvent $event)
+    {
+        parent::onBootstrap($event);
+        $this->addRoutes();
+    }
+
+    public function install(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'install');
+    }
+
+    public function uninstall(ServiceLocatorInterface $serviceLocator)
+    {
+        $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'uninstall');
+    }
+
+    protected function manageSettings($settings, $process, $key = 'settings')
+    {
+        $config = require __DIR__ . '/config/module.config.php';
+        $defaultSettings = $config[strtolower(__NAMESPACE__)][$key];
+        foreach ($defaultSettings as $name => $value) {
+            switch ($process) {
+                case 'install':
+                    $settings->set($name, $value);
+                    break;
+                case 'uninstall':
+                    $settings->delete($name);
+                    break;
+            }
+        }
+    }
+
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {
         $sharedEventManager->attach(
-            'Omeka\Form\SiteSettingsForm',
+            \Omeka\Form\SiteSettingsForm::class,
             'form.add_elements',
             [$this, 'addSiteSettingsFormElements']
         );
 
         $sharedEventManager->attach(
-            'Omeka\Form\SiteSettingsForm',
+            \Omeka\Form\SiteSettingsForm::class,
             'form.add_input_filters',
             [$this, 'addSiteSettingsFormFilters']
         );
+    }
+
+    public function getConfigForm(PhpRenderer $renderer)
+    {
+        $services = $this->getServiceLocator();
+        $config = $services->get('Config');
+        $settings = $services->get('Omeka\Settings');
+        $formElementManager = $services->get('FormElementManager');
+
+        $data = [];
+        $defaultSettings = $config[strtolower(__NAMESPACE__)]['settings'];
+        foreach ($defaultSettings as $name => $value) {
+            $data[$name] = $settings->get($name);
+        }
+
+        $form = $formElementManager->get(ConfigForm::class);
+        $form->init();
+        $form->setData($data);
+        $html = $renderer->formCollection($form);
+        return $html;
+    }
+
+    public function handleConfigForm(AbstractController $controller)
+    {
+        $services = $this->getServiceLocator();
+        $config = $services->get('Config');
+        $settings = $services->get('Omeka\Settings');
+
+        $params = $controller->getRequest()->getPost();
+
+        $form = $this->getServiceLocator()->get('FormElementManager')
+            ->get(ConfigForm::class);
+        $form->init();
+        $form->setData($params);
+        if (!$form->isValid()) {
+            $controller->messenger()->addErrors($form->getMessages());
+            return false;
+        }
+
+        $defaultSettings = $config[strtolower(__NAMESPACE__)]['settings'];
+        foreach ($params as $name => $value) {
+            if (isset($defaultSettings[$name])) {
+                $settings->set($name, $value);
+            }
+        }
     }
 
     public function addSiteSettingsFormElements(Event $event)
@@ -168,6 +252,108 @@ class Module extends AbstractModule
         $inputFilter->get('upgrade_from')->add([
             'name' => 'upgrade_search_resource_types',
             'required' => false,
+        ]);
+    }
+
+    protected function addRoutes()
+    {
+        $serviceLocator = $this->getServiceLocator();
+        $router = $serviceLocator->get('Router');
+        if (!$router instanceof \Zend\Router\Http\TreeRouteStack) {
+            return;
+        }
+
+        $settings = $serviceLocator->get('Omeka\Settings');
+
+        $defaultSite = $settings->get('default_site');
+        if (empty($defaultSite)) {
+            return;
+        }
+
+        if (!$settings->get('upgrade_add_old_routes')) {
+            return;
+        }
+
+        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+        $site = $api->read('sites', $defaultSite)->getContent();
+        if (empty($site)) {
+            return;
+        }
+        $siteSlug = $site->slug();
+
+        $router->addRoute('upgrade_collections', [
+            'type' => Segment::class,
+            'options' => [
+                'route' => '/collections[/:action][/:id]',
+                'constraints' => [
+                    'id' => '\d+',
+                    'action' => 'show|browse',
+                ],
+                'defaults' => [
+                    '__NAMESPACE__' => 'Omeka\Controller\Site',
+                    '__SITE__' => true,
+                    'controller' => 'item-set',
+                    'action' => 'browse',
+                    'site-slug' => $siteSlug,
+                ],
+            ],
+        ]);
+
+        $router->addRoute('upgrade_items', [
+            'type' => Segment::class,
+            'options' => [
+                'route' => '/items[/:action][/:id]',
+                'constraints' => [
+                    'id' => '\d+',
+                    'action' => 'show|browse',
+                ],
+                'defaults' => [
+                    '__NAMESPACE__' => 'Omeka\Controller\Site',
+                    '__SITE__' => true,
+                    'controller' => 'item',
+                    'action' => 'browse',
+                    'site-slug' => $siteSlug,
+                ],
+            ],
+        ]);
+
+        $router->addRoute('upgrade_files', [
+            'type' => Segment::class,
+            'options' => [
+                'route' => '/files/show/:id',
+                'constraints' => [
+                    'id' => '\d+',
+                    'action' => 'show',
+                ],
+                'defaults' => [
+                    '__NAMESPACE__' => 'Omeka\Controller\Site',
+                    '__SITE__' => true,
+                    'controller' => 'media',
+                    'action' => 'show',
+                    'site-slug' => $siteSlug,
+                ],
+            ],
+        ]);
+
+        $pages = $site->pages();
+        if (empty($pages)) {
+            return;
+        }
+        $page = reset($pages);
+
+        $router->addRoute('upgrade_homepage', [
+            'type' => Literal::class,
+            'options' => [
+                'route' => '/',
+                'defaults' => [
+                    '__NAMESPACE__' => 'Omeka\Controller\Site',
+                    '__SITE__' => true,
+                    'controller' => 'page',
+                    'action' => 'show',
+                    'site-slug' => $siteSlug,
+                    'page-slug' => $page->slug(),
+                ],
+            ],
         ]);
     }
 }
