@@ -18,7 +18,7 @@ return [
         ],
     ],
     'upgradefromomekaclassic' => [
-        'settings' => [
+        'config' => [
             'upgrade_add_old_routes' => false,
         ],
         'site_settings' => [

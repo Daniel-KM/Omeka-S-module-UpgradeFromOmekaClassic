@@ -40,7 +40,7 @@ class Module extends AbstractModule
         $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'uninstall');
     }
 
-    protected function manageSettings($settings, $process, $key = 'settings')
+    protected function manageSettings($settings, $process, $key = 'config')
     {
         $config = require __DIR__ . '/config/module.config.php';
         $defaultSettings = $config[strtolower(__NAMESPACE__)][$key];
@@ -76,15 +76,14 @@ class Module extends AbstractModule
         $services = $this->getServiceLocator();
         $config = $services->get('Config');
         $settings = $services->get('Omeka\Settings');
-        $formElementManager = $services->get('FormElementManager');
+        $form = $services->get('FormElementManager')->get(ConfigForm::class);
 
         $data = [];
-        $defaultSettings = $config[strtolower(__NAMESPACE__)]['settings'];
+        $defaultSettings = $config[strtolower(__NAMESPACE__)]['config'];
         foreach ($defaultSettings as $name => $value) {
             $data[$name] = $settings->get($name);
         }
 
-        $form = $formElementManager->get(ConfigForm::class);
         $form->init();
         $form->setData($data);
         $html = $renderer->formCollection($form);
@@ -99,8 +98,7 @@ class Module extends AbstractModule
 
         $params = $controller->getRequest()->getPost();
 
-        $form = $this->getServiceLocator()->get('FormElementManager')
-            ->get(ConfigForm::class);
+        $form = $services->get('FormElementManager')->get(ConfigForm::class);
         $form->init();
         $form->setData($params);
         if (!$form->isValid()) {
@@ -108,9 +106,9 @@ class Module extends AbstractModule
             return false;
         }
 
-        $defaultSettings = $config[strtolower(__NAMESPACE__)]['settings'];
+        $defaultSettings = $config[strtolower(__NAMESPACE__)]['config'];
         foreach ($params as $name => $value) {
-            if (isset($defaultSettings[$name])) {
+            if (array_key_exists($name, $defaultSettings)) {
                 $settings->set($name, $value);
             }
         }
