@@ -3,8 +3,8 @@ namespace UpgradeFromOmekaClassic\View\Helper;
 
 /**
  * @note Upgraded from Omeka Classic via the plugin "Upgrade to Omeka S".
- * @link https://github.com/Daniel-KM/UpgradeToOmekaS
- * @link https://github.com/Daniel-KM/UpgradeFromOmekaClassic
+ * @link https://github.com/Daniel-KM/Omeka-plugin-UpgradeToOmekaS
+ * @link https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic
  * @internal Copied methods removed between Omeka C and Omeka S.
  * Methods that are in Zend or Doctrine should be used preferably.
  *

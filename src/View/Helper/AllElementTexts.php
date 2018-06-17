@@ -11,8 +11,8 @@ use Omeka\Api\Representation\PropertyRepresentation;
  * Omeka
  *
  * @note Upgraded from Omeka Classic via the plugin "Upgrade to Omeka S".
- * @link https://github.com/Daniel-KM/UpgradeToOmekaS
- * @link https://github.com/Daniel-KM/UpgradeFromOmekaClassic
+ * @link https://github.com/Daniel-KM/Omeka-plugin-UpgradeToOmekaS
+ * @link https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic
  * @todo Replaced by $resource->values() and ->displayValues() in most cases.
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media

@@ -96,7 +96,7 @@ Copyright
 
 
 [Upgrade from Omeka Classic]: https://github.com/Daniel-KM/Omeka-S-module-UpgradeFromOmekaClassic
-[Upgrade to Omeka Semantic]: https://github.com/Daniel-KM/UpgradeToOmekaS
+[Upgrade to Omeka Semantic]: https://github.com/Daniel-KM/Omeka-S-module-UpgradeToOmekaS
 [Omeka]: https://www.omeka.org
 [Omeka Classic]: https://omeka.org
 [Omeka Semantic]: https://omeka.org/s
