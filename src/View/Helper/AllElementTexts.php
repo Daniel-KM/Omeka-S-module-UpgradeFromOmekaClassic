@@ -77,7 +77,7 @@ class AllElementTexts extends AbstractHelper
      * @var string
      */
     // protected $_partial = 'common/record-metadata.php';
-    protected $_partial = 'common/record-metadata.phtml';
+    protected $_partial = 'common/record-metadata';
 
     /**
      * Get the record metadata list.

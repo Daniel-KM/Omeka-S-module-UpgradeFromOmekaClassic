@@ -2319,7 +2319,7 @@ class Upgrade extends AbstractHelper
         $collection = $this->get_random_featured_collection();
         if ($collection) {
             $html = $this->getView()->partial(
-                'omeka/site/item-set/single.phtml',
+                'omeka/site/item-set/single',
                 [
                     'itemSet' => $collection,
                 ]
@@ -2599,7 +2599,7 @@ class Upgrade extends AbstractHelper
         // Only "show_advanced" is managed (and may be set in theme).
         return $this->getView()
             ->partial(
-                'common/search-main.phtml',
+                'common/search-main',
                 $options);
     }
 
@@ -2774,7 +2774,7 @@ class Upgrade extends AbstractHelper
     public function common($file, $vars = array(), $dir = 'common')
     {
     //     return get_view()->partial($dir . '/' . $file . '.php', $vars);
-        $filepath = $dir . '/' . $file . '.phtml';
+        $filepath = $dir . '/' . $file;
         if (!$this->isInTheme($filepath)) {
             return;
         }
@@ -3121,7 +3121,7 @@ class Upgrade extends AbstractHelper
             $query['site_id'] = $site->id();
         }
         return $view->partial(
-            'common/output-format-list.phtml',
+            'common/output-format-list',
             array(
                 'output_formats' => $this->get_current_action_contexts(),
                 'query' => $query,
@@ -3616,7 +3616,7 @@ class Upgrade extends AbstractHelper
         $query = $view->params()->fromQuery();
         echo $this->js_tag('advanced-search');
         return $view->partial(
-            'common/advanced-search.phtml',
+            'common/advanced-search',
             [
                 'query' => $query,
                 'formAttributes' => $props,
@@ -3725,7 +3725,7 @@ class Upgrade extends AbstractHelper
         $view = $this->getView();
         $items = $this->get_recent_items($count);
         if ($items) {
-            $template = 'omeka/site/item/single.phtml';
+            $template = 'omeka/site/item/single';
             // Check if the template exists.
             if ($this->isInTheme($template)) {
                 $html = '';
@@ -3735,7 +3735,7 @@ class Upgrade extends AbstractHelper
             }
             // Use the default view.
             else {
-                $template = 'common/block-layout/browse-preview.phtml';
+                $template = 'common/block-layout/browse-preview';
                 $html = $view->partial($template, ['items' => $items]);
             }
         } else {
@@ -3772,7 +3772,7 @@ class Upgrade extends AbstractHelper
         $view = $this->getView();
         $items = $this->get_random_featured_items($count, $hasImage);
         if ($items) {
-            $template = 'omeka/site/item/single.phtml';
+            $template = 'omeka/site/item/single';
             // Check if the template exists.
             if ($this->isInTheme($template)) {
                 $html = '';
@@ -3782,7 +3782,7 @@ class Upgrade extends AbstractHelper
             }
             // Use the default view.
             else {
-                $template = 'common/block-layout/browse-preview.phtml';
+                $template = 'common/block-layout/browse-preview';
                 $html = $view->partial($template, ['items' => $items]);
             }
         } else {
@@ -5017,6 +5017,8 @@ class Upgrade extends AbstractHelper
             $query = array_merge($query, $params);
             $url = $view->url(null, [], ['query' => $query], true);
         } else {
+            // The two next methods work, but without the fragment (#).
+            // $url = $view->serverUrl(true);
             $url = $view->url(null, [], true);
         }
         return $url;
