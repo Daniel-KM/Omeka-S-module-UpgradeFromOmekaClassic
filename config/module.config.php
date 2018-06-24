@@ -29,5 +29,8 @@ return [
             'upgrade_use_square_thumbnail' => true,
             'upgrade_tag_delimiter' => ',',
         ],
+        'dependencies' => [
+            'Next',
+        ],
     ],
 ];

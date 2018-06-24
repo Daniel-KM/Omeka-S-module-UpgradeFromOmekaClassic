@@ -3,6 +3,9 @@
 namespace UpgradeFromOmekaClassic;
 
 use Omeka\Module\AbstractModule;
+use Omeka\Module\Exception\ModuleCannotInstallException;
+use Omeka\Mvc\Controller\Plugin\Messenger;
+use Omeka\Stdlib\Message;
 use UpgradeFromOmekaClassic\Form\ConfigForm;
 use Zend\EventManager\Event;
 use Zend\EventManager\SharedEventManagerInterface;
@@ -27,11 +30,34 @@ class Module extends AbstractModule
     public function onBootstrap(MvcEvent $event)
     {
         parent::onBootstrap($event);
+
+        // TODO Find a better way to disable a module when dependencies are unavailable.
+        $services = $event->getApplication()->getServiceManager();
+        if (!$this->checkDependencies($services)) {
+            $this->disableModule($services);
+            $translator = $services->get('MvcTranslator');
+            $message = new Message($translator->translate('The module "%s" was automatically deactivated because the dependencies are unavailable.'), // @translate
+                __NAMESPACE__
+            );
+            $messenger = new Messenger();
+            $messenger->addWarning($message);
+        }
+
         $this->addRoutes();
     }
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
+        $api = $serviceLocator->get('Omeka\ApiManager');
+        $translator = $serviceLocator->get('MvcTranslator');
+
+        if (!$this->checkDependencies($serviceLocator)) {
+            $message = new Message($translator->translate('This module requires the module "%s".'), // @translate
+                'Next'
+            );
+            throw new ModuleCannotInstallException($message);
+        }
+
         $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'install');
     }
 
@@ -56,12 +82,44 @@ class Module extends AbstractModule
         }
     }
 
+    /**
+     * Check if all dependencies are enabled.
+     *
+     * @param ServiceLocatorInterface $services
+     * @return bool
+     */
+    protected function checkDependencies(ServiceLocatorInterface $services)
+    {
+        $moduleManager = $services->get('Omeka\ModuleManager');
+        $config = require __DIR__ . '/config/module.config.php';
+        $dependencies = $config[strtolower(__NAMESPACE__)]['dependencies'];
+        foreach ($dependencies as $moduleClass) {
+            $module = $moduleManager->getModule($moduleClass);
+            if (empty($module) || $module->getState() !== \Omeka\Module\Manager::STATE_ACTIVE) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Disable the module.
+     *
+     * @param ServiceLocatorInterface $services
+     */
+    protected function disableModule(ServiceLocatorInterface $services)
+    {
+        $moduleManager = $services->get('Omeka\ModuleManager');
+        $module = $moduleManager->getModule(__NAMESPACE__);
+        $moduleManager->deactivate($module);
+    }
+
     public function attachListeners(SharedEventManagerInterface $sharedEventManager)
     {
         $sharedEventManager->attach(
             \Omeka\Form\SiteSettingsForm::class,
             'form.add_elements',
-            [$this, 'addSiteSettingsFormElements']
+            [$this, 'addFormElementsSiteSettings']
         );
 
         $sharedEventManager->attach(
@@ -114,7 +172,7 @@ class Module extends AbstractModule
         }
     }
 
-    public function addSiteSettingsFormElements(Event $event)
+    public function addFormElementsSiteSettings(Event $event)
     {
         $services = $this->getServiceLocator();
         $siteSettings = $services->get('Omeka\Settings\Site');
