@@ -1092,7 +1092,7 @@ class Upgrade extends AbstractHelper
     {
         // NOTE Useless in public theme of Omeka S.
     //    return (bool) Zend_Controller_Front::getInstance()->getParam('admin');
-        return (boolean) $this->getView()->params()->fromRoute('__ADMIN__');
+        return (bool) $this->getView()->params()->fromRoute('__ADMIN__');
     }
 
     /**
@@ -1585,7 +1585,7 @@ class Upgrade extends AbstractHelper
     {
     //     $element = get_db()->getTable('Element')->findByElementSetNameAndElementName($elementSetName, $elementName);
     //     return (bool) $element;
-        return (boolean) $this->mapElementToTerm($elementSetName, $elementName);
+        return (bool) $this->mapElementToTerm($elementSetName, $elementName);
     }
 
     /**
@@ -3677,7 +3677,7 @@ class Upgrade extends AbstractHelper
     //                                      'hasImage' => $hasImage), $num);
         // NOTE Featured is not managed by Omeka S, so return random items.
         // Doctrine or API doesn't allow random queries.
-        $num = (integer) $num;
+        $num = (int) $num;
         $sqlImage = $hasImage ? 'AND media.has_thumbnails = 1' : '';
         // TODO Manage random_featured with site items pool. No issue with a single site.
         // $site = $this->currentSite();
@@ -4370,14 +4370,14 @@ class Upgrade extends AbstractHelper
 
     //     return get_view()->paginationControl($paginator, $scrollingStyle, $partial);
         $partialName = isset($options['partial_file']) ? $options['partial_file'] : null;
-        $totalCount = isset($options['total_results']) ? (integer) $options['total_results'] : null;
-        $currentPage = isset($options['page']) ? (integer) $options['page'] : null;
-        $perPage = isset($options['per_page']) ? (integer) $options['per_page'] : null;
+        $totalCount = isset($options['total_results']) ? (int) $options['total_results'] : null;
+        $currentPage = isset($options['page']) ? (int) $options['page'] : null;
+        $perPage = isset($options['per_page']) ? (int) $options['per_page'] : null;
 
         // NOTE Pagination doesn't manage "scrolling_style" and "page_range"
         // anymore. Use paginator() if needed.
         $scrollingStyle = isset($options['scrolling_style']) ? $options['scrolling_style'] : null;
-        $pageRange = isset($options['page_range']) ? (integer) $options['page_range'] : null;
+        $pageRange = isset($options['page_range']) ? (int) $options['page_range'] : null;
 
         $pagination = $this->getView()
             ->pagination($partialName, $totalCount, $currentPage, $perPage);

@@ -218,7 +218,7 @@ class Metadata extends AbstractHelper
             case 'collection_name': return $record->itemSets() ? $record->itemSets()[0]->displayTitle() : null;
             case 'item_type_id': return $record->resourceClass() ? $record->resourceClass()->localName() : null;
             case 'item_type_name': return $record->resourceClass() ? $record->resourceClass()->label() : null;
-            case 'has_files': return (boolean) count($record->media());
+            case 'has_files': return (bool) count($record->media());
             // Unmanaged in Omeka S.
             case 'has_tags': return !empty($record->tags);
             case 'file_count': return count($record->media());
