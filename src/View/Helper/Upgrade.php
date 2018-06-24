@@ -2316,14 +2316,31 @@ class Upgrade extends AbstractHelper
     //         $html = '<p>' . __('No featured collections are available.') . '</p>';
     //     }
     //     return $html;
+        $view = $this->getView();
         $collection = $this->get_random_featured_collection();
         if ($collection) {
-            $html = $this->getView()->partial(
-                'omeka/site/item-set/single',
-                [
-                    'itemSet' => $collection,
-                ]
-            );
+            $template = 'omeka/site/item-set/single';
+            // Check if the template exists.
+            if ($this->isInTheme($template)) {
+                $html = $view->partial(
+                    $template,
+                    [
+                        'itemSet' => $collection,
+                    ]
+                );
+            }
+            // Use the default view.
+            else {
+                $template = 'common/block-layout/browse-preview';
+                $html = $view->partial($template, [
+                    'resourceType' => 'item-set',
+                    'resources' => [$collection],
+                    // 'heading' => $this->stranslate('Featured Collection'), // @translate
+                    'heading' => '',
+                    'linkText' => '',
+                    'query' => [],
+                ]);
+            }
         } else {
             $html = '<p>' . $this->stranslate('No featured collections are available.') . '</p>';
         }
@@ -3736,7 +3753,14 @@ class Upgrade extends AbstractHelper
             // Use the default view.
             else {
                 $template = 'common/block-layout/browse-preview';
-                $html = $view->partial($template, ['items' => $items]);
+                $html = $view->partial($template, [
+                    'resourceType' => 'item',
+                    'resources' => $items,
+                    // 'heading' => $this->stranslate('Recently Added Items'), // @translate
+                    'heading' => '',
+                    'linkText' => '',
+                    'query' => [],
+                ]);
             }
         } else {
             $html = '<p>' . $this->stranslate('No recent items available.') . '</p>';
@@ -3783,7 +3807,14 @@ class Upgrade extends AbstractHelper
             // Use the default view.
             else {
                 $template = 'common/block-layout/browse-preview';
-                $html = $view->partial($template, ['items' => $items]);
+                $html = $view->partial($template, [
+                    'resourceType' => 'item',
+                    'resources' => $items,
+                    // 'heading' => $this->stranslate(['Featured Item', 'Featured Items', $count]), // @translate
+                    'heading' => '',
+                    'linkText' => '',
+                    'query' => [],
+                ]);
             }
         } else {
             $html = '<p>' . $this->stranslate('No featured items are available.') . '</p>';
