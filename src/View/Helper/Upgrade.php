@@ -550,7 +550,7 @@ class Upgrade extends AbstractHelper
      */
     public function mediaFilesize(MediaRepresentation $media)
     {
-        return $this->getView()->mediaSize($media);
+        return $media->size();
     }
 
     /**

@@ -237,8 +237,7 @@ class Metadata extends AbstractHelper
             case 'item_id': return $record->item()->id();
             // Managed in Omeka S via sql only.
             case 'order': return isset($record->position) ?  $record->position : null;
-            // Unmanaged in Omeka S.
-            case 'size': return $this->getView()->upgrade()->mediaFilesize($record);
+            case 'size': return $record->size();
             case 'has_derivative_image': return $record->hasThumbnails();
             case 'authentication': return $record->sha256();
             case 'mime_type': return $record->mediaType();
