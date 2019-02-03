@@ -10,13 +10,9 @@ use UpgradeFromOmekaClassic\Form\ConfigForm;
 use Zend\EventManager\Event;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\Form\Fieldset;
-use Zend\Form\Element\Text;
-use Zend\Form\Element\Checkbox;
-use Zend\Form\Element\MultiCheckbox;
+use Zend\Form\Element;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
-use Zend\Router\Http\Literal;
-use Zend\Router\Http\Segment;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
@@ -48,7 +44,6 @@ class Module extends AbstractModule
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
-        $api = $serviceLocator->get('Omeka\ApiManager');
         $translator = $serviceLocator->get('MvcTranslator');
 
         if (!$this->checkDependencies($serviceLocator)) {
@@ -139,7 +134,7 @@ class Module extends AbstractModule
         $data = [];
         $defaultSettings = $config[strtolower(__NAMESPACE__)]['config'];
         foreach ($defaultSettings as $name => $value) {
-            $data[$name] = $settings->get($name);
+            $data[$name] = $settings->get($name, $value);
         }
 
         $form->init();
@@ -186,7 +181,7 @@ class Module extends AbstractModule
 
         $fieldset->add([
             'name' => 'upgrade_use_advanced_search',
-            'type' => Checkbox::class,
+            'type' => Element\Checkbox::class,
             'options' => [
                 'label' => 'Use advanced site-wide search', // @translate
                 'info' => 'Check this box if you wish to allow users to search your whole site by record (i.e. item, item set, media).', // @translate
@@ -228,7 +223,7 @@ class Module extends AbstractModule
         ];
         $fieldset->add([
             'name' => 'upgrade_search_resource_types',
-            'type' => MultiCheckbox::class,
+            'type' => Element\MultiCheckbox::class,
             'options' => [
                 'label' => 'Search resources types', // @translate
                 'info' => 'Customize which types of resources will be searchable in Omeka.', // @translate
@@ -242,7 +237,7 @@ class Module extends AbstractModule
 
         $fieldset->add([
             'name' => 'upgrade_show_vocabulary_headings',
-            'type' => Checkbox::class,
+            'type' => Element\Checkbox::class,
             'options' => [
                 'label' => 'Show vocabulary headings', // @translate
             ],
@@ -256,7 +251,7 @@ class Module extends AbstractModule
 
         $fieldset->add([
             'name' => 'upgrade_show_empty_properties',
-            'type' => Checkbox::class,
+            'type' => Element\Checkbox::class,
             'options' => [
                 'label' => 'Show empty properties', // @translate
             ],
@@ -270,7 +265,7 @@ class Module extends AbstractModule
 
         $fieldset->add([
             'name' => 'upgrade_use_square_thumbnail',
-            'type' => Checkbox::class,
+            'type' => Element\Checkbox::class,
             'options' => [
                 'label' => 'Use square thumbnails', // @translate
                 'info' => 'Use square-cropped images by default wherever thumbnails appear in the public interface.', // @translate
@@ -285,7 +280,7 @@ class Module extends AbstractModule
 
         $fieldset->add([
             'name' => 'upgrade_tag_delimiter',
-            'type' => Text::class,
+            'type' => Element\Text::class,
             'options' => [
                 'label' => 'Tag delimiter', // @translate
                 'info' => 'Separate tags using this character or string. Be careful when changing this setting. You run the risk of splitting tags that contain the old delimiter.', // @translate
@@ -338,7 +333,7 @@ class Module extends AbstractModule
         $siteSlug = $site->slug();
 
         $router->addRoute('upgrade_collections', [
-            'type' => Segment::class,
+            'type' => \Zend\Router\Http\Segment::class,
             'options' => [
                 'route' => '/collections[/:action][/:id]',
                 'constraints' => [
@@ -356,7 +351,7 @@ class Module extends AbstractModule
         ]);
 
         $router->addRoute('upgrade_items', [
-            'type' => Segment::class,
+            'type' => \Zend\Router\Http\Segment::class,
             'options' => [
                 'route' => '/items[/:action][/:id]',
                 'constraints' => [
@@ -374,7 +369,7 @@ class Module extends AbstractModule
         ]);
 
         $router->addRoute('upgrade_files', [
-            'type' => Segment::class,
+            'type' => \Zend\Router\Http\Segment::class,
             'options' => [
                 'route' => '/files/show/:id',
                 'constraints' => [
@@ -398,7 +393,7 @@ class Module extends AbstractModule
         $page = reset($pages);
 
         $router->addRoute('upgrade_homepage', [
-            'type' => Literal::class,
+            'type' => \Zend\Router\Http\Literal::class,
             'options' => [
                 'route' => '/',
                 'defaults' => [
