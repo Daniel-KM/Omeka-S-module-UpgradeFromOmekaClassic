@@ -526,31 +526,7 @@ class Upgrade extends AbstractHelper
      */
     public function currentSite()
     {
-        $view = $this->getView();
-        $slug = $view
-            ->params()
-            ->fromRoute('site-slug');
-        if ($slug) {
-            try {
-                // TODO Sites are not available via read or search slug.
-                $site = $view
-                    ->api()
-                    ->read('sites', ['slug' => $slug]);
-                return $site->getContent();
-            } catch (NotFoundException $e) {
-                return;
-            }
-        }
-
-        // A second way to find the site via the route and the database.
-        $site = $this->getView()
-            ->getHelperPluginManager()
-            ->get('Zend\View\Helper\ViewModel')
-            ->getRoot()
-            ->getVariable('site');
-        if (!empty($site)) {
-            return $site;
-        }
+        return $this->getView()->currentSite();
     }
 
     /**
@@ -563,40 +539,7 @@ class Upgrade extends AbstractHelper
      */
     public function isHomePage()
     {
-        $site = $this->currentSite();
-        if (empty($site)) {
-            return false;
-        }
-
-        $view = $this->getView();
-
-        // Check the alias of the root of Omeka S with rerouting.
-        if ($this->is_current_url($view->basePath())) {
-            return true;
-        }
-
-        // Check the first normal pages.
-        $linkedPages = $site->linkedPages();
-        if ($linkedPages) {
-            $firstPage = current($linkedPages);
-            $url = $view->url('site/page', [
-                'site-slug' => $site->slug(),
-                'page-slug' => $firstPage->slug(),
-            ]);
-            if ($this->is_current_url($url)) {
-                return true;
-            }
-        }
-
-        // Check the root of the site.
-        $url = $view->url('site', [
-            'site-slug' => $site->slug(),
-        ]);
-        if ($this->is_current_url($url)) {
-            return true;
-        }
-
-        return false;
+        return $this->getView()->isHomePage();
     }
 
     /**
@@ -607,14 +550,7 @@ class Upgrade extends AbstractHelper
      */
     public function mediaFilesize(MediaRepresentation $media)
     {
-        if (!$media->hasOriginal()) {
-            return;
-        }
-        $filepath = OMEKA_PATH . '/files/original/' . $media->filename();
-        if (!file_exists($filepath)) {
-            return false;
-        }
-        return filesize($filepath);
+        return $this->getView()->mediaSize($media);
     }
 
     /**
